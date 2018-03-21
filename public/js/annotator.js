@@ -10,7 +10,15 @@ $(function() {
   var moveBox = function(el) {
     var box = frameDoc.getElementById('ANNOTATIONBOX');
     if (!box) {
-      box = $('<div id="ANNOTATIONBOX" style="border: 2px solid red; position: absolute; pointer-events: none; z-index: 2147483647"></div>')[0]
+      box = $('<div id="ANNOTATIONBOX"></div>').css({
+        'box-sizing': 'border-box',
+        '-moz-box-sizing': 'border-box',
+        '-webkit-box-sizing': 'border-box',
+        'border': '2px solid red',
+        'position': 'absolute',
+        'pointer-events': 'none',
+        'z-index': 2147483647
+      })[0]
       frameDoc.body.appendChild(box)
     }
     console.log(el);
