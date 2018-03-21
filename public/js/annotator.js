@@ -37,8 +37,8 @@ $(function() {
   ////////////////////////////////////////////////////////////////
   // Globals
 
-  var frameDoc = document.getElementById('webpage').contentDocument
-  var frameWin = document.getElementById('webpage').contentWindow
+  var frameDoc = document.getElementById('webpage').contentDocument;
+  var frameWin = document.getElementById('webpage').contentWindow;
 
   const NUM_QUESTIONS = 5;
   var questionDivs = [], currentQuestion = 0;
@@ -130,18 +130,22 @@ $(function() {
   ////////////////////////////////////////////////////////////////
   // Load data
 
-  function moveBox(el) {
+  var isSelectionMode = false, currentElement = null;
+
+  function moveBox(el, color) {
     var box = frameDoc.getElementById('ANNOTATIONBOX');
-    if (!box) {
-      box = $('<div id="ANNOTATIONBOX" style="border: 2px solid red; position: absolute; pointer-events: none; z-index: 999999; background-color: rgba(255,255,255,0.5);"></div>')[0]
-      frameDoc.body.appendChild(box)
-    }
     var rect = el.getBoundingClientRect();
-    console.log(el, rect);
     box.style.top = '' + rect.top + 'px';
     box.style.left = '' + rect.left + 'px';
     box.style.height = '' + rect.height + 'px';
     box.style.width = '' + rect.width + 'px';
+    box.style.borderColor = color;
+    currentElement = el;
+  }
+
+  function selectElement(element) {
+    moveBox(element, 'blue');
+    console.log($(element).data('xid'));
   }
 
   function hackPage() {
@@ -150,6 +154,11 @@ $(function() {
       e.stopImmediatePropagation();
     })
     frameWin.addEventListener('mousedown', function(e) {
+      if (isSelectionMode) {
+        isSelectionMode = false;
+        currentElement = null;
+        selectElement(e.target);
+      }
       e.preventDefault();
       e.stopImmediatePropagation();
     })
@@ -157,13 +166,34 @@ $(function() {
       e.preventDefault();
       e.stopImmediatePropagation();
     })
-    var currentElement = null;
     frameWin.addEventListener('mouseover', function(e) {
-      if (currentElement !== e.target) {
-        moveBox(e.target)
-        currentElement = e.target;
+      if (isSelectionMode && e.target !== currentElement) {
+        moveBox(e.target, 'red')
       }
     })
+    frameDoc.body.appendChild($('<div id=ANNOTATIONBOX>').css({
+      'border': '5px solid red',
+      'position': 'absolute',
+      'pointer-events': 'none',
+      'z-index': 999999999,
+      'background-color': 'rgba(255,255,255,0.5)',
+    })[0]);
+  }
+
+  function createQuestionDiv(i) {
+    var questionDiv = $('<div class=question>').hide();
+    questionDiv.append($('<button type=button class=selectElementButton>')
+        .text('Select Element')
+        .click(function (e) {isSelectionMode = true;}));
+    questionDiv.append($('<input type=hidden>')
+        .attr('id', 'e' + i).attr('name', 'e' + i));
+    for (let j = 0; j < 3; j++) {
+      questionDiv.append($('<p class=answerRow>')
+          .append($('<span>').text('' + (j+1) + '.'))
+          .append($('<input type=text>')
+            .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)));
+    }
+    return questionDiv;
   }
 
   // Load the page!
@@ -176,10 +206,7 @@ $(function() {
     hackPage();
     // Add question divs
     for (let i = 0; i < NUM_QUESTIONS; i++) {
-      questionDivs.push(
-        $('<div class=question>').hide()
-          .appendTo('#questionWrapper')
-      );
+      questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
     }
     // Show / Hide instructions
     $("#hideInstructionButton").text("Hide").prop('disabled', false);

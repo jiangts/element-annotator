@@ -89,14 +89,16 @@ body {
   margin: 0.3em 0;
 }
 
-#showingInstruction ul {
+#showingInstruction ul, #showingInstruction ol {
   margin-top: 0.3em;
   margin-bottom: 0.3em;
+  padding-left: 1.5em;
 }
 
-#showingInstruction ul li {
-  margin-bottom: 0em;
-  line-height: 1.5em;
+#showingInstruction li {
+  margin-bottom: 0.5em;
+  padding-left: 0.5em;
+  line-height: 1.3;
 }
 
 #showingInstruction table th {
@@ -151,49 +153,24 @@ body {
   color: #aaa;
 }
 
-.urlWrapper {
-  overflow: hidden;
-  white-space: nowrap;
+#answerForm .selectElementButton {
+  width: 100%;
+  height: 2.5em;
 }
 
-.urlWrapper:hover {
-  overflow: visible;
-}
-
-.url {
-  padding: 4px;
-  background-color: #ded;
-  border-radius: 3px;
-}
-
-.url:hover {
-  padding: 3px;
-  border: 1px solid #ada;
-  background-color: #cdc;
-}
-
-.questionText {
-  padding: 0.5em;
-  text-align: center;
-  background-color: #eef0ee;
-}
-
-#answerForm .choice {
+#answerForm .answerRow {
   margin: 0.5em 0;
 }
 
-#answerForm textarea  {
-  width: 96%;
-  margin-top: 0.5em;
+#answerForm .answerRow span {
+  display: inline-block;
+  width: 0.8em;
+  text-align: right;
+  margin: 0 10px;
 }
 
-#answerForm button.s {
-  padding: 2px 0;
-}
-
-#answerForm .squeeze {
-  margin: 0.8em 0 0.3em;
-  font-size: 80%;
+#answerForm .answerRow input {
+  font-size: 130%;
 }
 
 /*****************************************************************/
