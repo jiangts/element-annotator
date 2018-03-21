@@ -1,11 +1,213 @@
-#iframe {
-  width: 80%;
-  height: 100%;
-  border: none;
+/*****************************************************************/
+
+.centerize {
+  text-align: center;
+  margin: 0 auto;
 }
 
-html, body {
-  width: 100%;
-  height: 100%;
+.hidden {
+  display: none;
+}
+
+.red {
+  color: red;
+}
+
+.floatButton {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
+.clearFloat {
+  clear: both;
+}
+
+body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.column {
+  left: 0;
+  top: 0;
+}
+
+/*****************************************************************/
+
+#wrapper {
+  position: fixed;
+  width: 350px;
+  background-color: #ded;
+  border-bottom-right-radius: 1em;
+}
+
+#wrapper h1 {
+  font-size: 120%;
+  margin: 0.5em auto;
+}
+
+#wrapper h2 {
+  font-size: 100%;
+  margin: 1em auto 0.5em;
+}
+
+#wrapper h3 {
+  font-size: 90%;
+  margin: 0.8em auto 0.3em;
+}
+
+#instruction, #acceptHITWarning, #answerForm, #footer, #navbar {
+  margin: 0.8em;
+}
+
+#acceptHITWarning {
+  margin-top: 3em;
+  margin-bottom: -2em;
+  padding: 0.8em;
+  text-align: center;
+  color: #d22;
+  background-color: #cdc;
+  font-weight: bold;
+}
+
+#showingInstruction {
+  font-size: 90%;
+  padding: 0.2em 1em;
+  width: 650px;
+  position: absolute;
+  margin-left: 100px;
+  border-radius: 1em;
+  background-color: #ded;
+  border: 2px solid #bcb;
+}
+
+#showingInstruction p {
+  margin: 0.3em 0;
+}
+
+#showingInstruction ul {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+#showingInstruction ul li {
+  margin-bottom: 0em;
+  line-height: 1.5em;
+}
+
+#showingInstruction table th {
+  min-width: 5em;
+  text-align: right;
+  padding-right: 0.5em;
+}
+
+#showingInstruction .example {
+  margin: 0 auto;
+}
+
+#showingInstruction .example img {
+  float: left;
+  margin-right: 2em;
+}
+
+#showingInstruction kbd {
+  border: 1px solid #aaa;
+  border-radius: 0.2em;
+  box-shadow: 0.1em 0.2em 0.2em #ddd;
+  background-color: #f9f9f9;
+  padding: 0 0.5em;
+  font-family: inherit;
+  font-size: 0.9em;
+}
+
+#showingInstruction .button {
+  border: 1px solid gray;
+  border-radius: 0.2em;
+  border-style: outset;
+  background-color: #DDD;
+  padding: 0 0.5em;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
+#navbar {
+  margin-top: 3em;
+}
+
+#qNum {
+  margin: 0 0.5em;
+}
+
+#navbar button {
+  width: 7em;
+  height: 2.5em;
+}
+
+#navbar button:disabled {
+  color: #aaa;
+}
+
+.urlWrapper {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.urlWrapper:hover {
+  overflow: visible;
+}
+
+.url {
+  padding: 4px;
+  background-color: #ded;
+  border-radius: 3px;
+}
+
+.url:hover {
+  padding: 3px;
+  border: 1px solid #ada;
+  background-color: #cdc;
+}
+
+.questionText {
+  padding: 0.5em;
+  text-align: center;
+  background-color: #eef0ee;
+}
+
+#answerForm .choice {
+  margin: 0.5em 0;
+}
+
+#answerForm textarea  {
+  width: 96%;
+  margin-top: 0.5em;
+}
+
+#answerForm button.s {
+  padding: 2px 0;
+}
+
+#answerForm .squeeze {
+  margin: 0.8em 0 0.3em;
+  font-size: 80%;
+}
+
+/*****************************************************************/
+
+#webpageWrapper {
+  position: absolute;
+  margin: 0 0 0 350px;
+  padding: 0;
+  width: calc(100% - 350px);
+  height: 100%;
+}
+
+#webpage {
+  width: 100%;
+  height: 99%;
+  border: none;
 }

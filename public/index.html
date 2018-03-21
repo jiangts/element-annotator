@@ -1,11 +1,52 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <title>Site Annotator</title>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="js/annotator.js"></script>
-    <link href="css/annotator.css" rel="stylesheet" type="text/css"></link>
-  </head>
-  <body>
-    <iframe id="iframe"></iframe>
-  </body>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Element Annotator</title>
+  <link rel="stylesheet" type="text/css" href="css/annotator.css">
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/annotator.js"></script>
+</head>
+<body>
+  <div id="webpageWrapper" class="column">
+    <iframe id="webpage"></iframe>
+  </div>
+  <div id="wrapper" class="column">
+    <div id="instruction">
+      <div id="hidingInstruction" class="hidden">
+        <button type="button" class="floatButton" id="showInstructionButton">Show Instructions</button>
+      </div>
+      <div id="showingInstruction">
+        <h1>Instructions</h1>
+        <button type="button" class="floatButton" id="hideInstructionButton" disabled>Loading ...</button>
+        <p><strong>Describe 5 elements on the page in English.</strong></p>
+        <ul>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+    </div>
+    <div id="acceptHITWarning" class="hidden">
+      Preview Mode.<br>Please accept the HIT to start working.
+    </div>
+    <form id="answerForm">
+      <div id="navbar" class="centerize">
+        <input type="hidden" id="assignmentId" name="assignmentId">
+        <input type="hidden" id="batchId" name="batchId">
+        <input type="hidden" id="dataId" name="dataId">
+        <button id="prevButton" type="button">Previous</button>
+        <span id="qNum"></span>
+        <button id="nextButton" type="button">Next</button>
+        <button id="submitButton" type="button" class="hidden" disabled><strong>Submit</strong></button>
+      </div>
+      <input type="hidden" name="url">
+      <div id="questionWrapper">
+      </div>
+      <p id="validationWarning" class="hidden"></p>
+    </form>
+  </div>
+</body>
 </html>
+
