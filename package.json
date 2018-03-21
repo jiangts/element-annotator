@@ -9,7 +9,7 @@
   ],
   "author": {
     "name": "Allan Jiang",
-    "email": "origami789@gmail.com"
+    "email": "jiangts@stanford.edu"
   },
   "contributors": [],
   "bugs": {},
@@ -36,8 +36,10 @@
     "feathers-errors": "^2.9.2",
     "feathers-hooks": "^2.1.2",
     "feathers-hooks-common": "^4.10.0",
+    "feathers-nedb": "^3.0.0",
     "feathers-rest": "^1.8.1",
     "helmet": "^3.12.0",
+    "nedb": "^1.8.0",
     "serve-favicon": "^2.4.5",
     "winston": "^2.4.1"
   },
