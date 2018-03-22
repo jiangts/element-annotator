@@ -149,12 +149,32 @@ $(function() {
   });
 
   ////////////////////////////////////////////////////////////////
-  // Load data
+  // Web page interaction
 
   var isSelectionMode = false, currentElement = null;
 
-  function moveBox(el, color) {
-    var box = frameDoc.getElementById('ANNOTATIONBOX' + currentQuestion);
+  function buildBox(index) {
+    frameDoc.body.appendChild($('<div>')
+      .attr('id', 'ANNOTATIONBOX' + index)
+      .text(index + 1)
+      .css({
+        'border': '5px solid red',
+        'position': 'absolute',
+        'pointer-events': 'none',
+        'z-index': 999999999,
+        'background-color': 'rgba(255,255,255,0.5)',
+        'font-size': '30px',
+        'font-weight': 'bold',
+        'overflow': 'visible',
+        'display': 'flex',
+        'align-items': 'center',
+        'justify-content': 'center',
+      }).hide()[0]);
+  }
+
+  function moveBox(el, color, index) {
+    if (index === undefined) index = currentQuestion;
+    var box = frameDoc.getElementById('ANNOTATIONBOX' + index);
     var rect = el.getBoundingClientRect();
     $(box).show().css({
       'top': rect.top,
@@ -204,6 +224,9 @@ $(function() {
     })
   }
 
+  ////////////////////////////////////////////////////////////////
+  // Load data
+
   function createQuestionDiv(i) {
     var questionDiv = $('<div class=question>').hide();
     questionDiv.append($('<button type=button class=selectElementButton>')
@@ -213,12 +236,33 @@ $(function() {
         .attr('id', 'e' + i).attr('name', 'e' + i));
     for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
       questionDiv.append($('<p class=answerRow>')
-          .append($('<span>').text('' + (j+1) + '.'))
+          .append($('<span class=numbering>').text('' + (j+1) + '.'))
           .append($('<input type=text disabled>')
             .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)
             .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     }
     return questionDiv;
+  }
+
+  function createQuestionDivFromDatum(datum, i) {
+    var questionDiv = $('<div class=question>').hide();
+    datum.answers.forEach(function (answer, j) {
+      questionDiv.append($('<p class=answerRow>')
+          .append($('<span class=numbering>').text('' + (j+1) + '.'))
+          .append($('<span class=view-answer>').text(answer)));
+    });
+    return questionDiv;
+  }
+
+  function finalizeLoading() {
+    // Show / Hide instructions
+    $("#hideInstructionButton").text("Hide").prop('disabled', false);
+    toggleInstructions(noAssignmentId);
+    if (!noAssignmentId) {
+      $('.question textarea, .question input, #submitButton').prop('disabled', false);
+      $('#a1').focus();
+    }
+    goToQuestion(0);
   }
 
   // Load the page!
@@ -237,33 +281,22 @@ $(function() {
     frameDoc.documentElement.innerHTML = data.processedhtml;
     hackPage();
     // Add question divs
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
-      questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
-      frameDoc.body.appendChild($('<div>')
-        .attr('id', 'ANNOTATIONBOX' + i)
-        .text(i + 1)
-        .css({
-          'border': '5px solid red',
-          'position': 'absolute',
-          'pointer-events': 'none',
-          'z-index': 999999999,
-          'background-color': 'rgba(255,255,255,0.5)',
-          'font-size': '30px',
-          'font-weight': 'bold',
-          'overflow': 'visible',
-          'display': 'flex',
-          'align-items': 'center',
-          'justify-content': 'center',
-        }).hide()[0]);
+    if (gup("view")) {
+      $.get(gup("view"), function (data) {
+        data.forEach(function (datum, i) {
+          questionDivs.push(createQuestionDivFromDatum(datum).appendTo('#questionWrapper'));
+          buildBox(i);
+          moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
+        });
+        finalizeLoading();
+      });
+    } else {
+      for (let i = 0; i < NUM_QUESTIONS; i++) {
+        questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
+        buildBox(i);
+      }
+      finalizeLoading();
     }
-    // Show / Hide instructions
-    $("#hideInstructionButton").text("Hide").prop('disabled', false);
-    toggleInstructions(noAssignmentId);
-    if (!noAssignmentId) {
-      $('.question textarea, .question input, #submitButton').prop('disabled', false);
-      $('#a1').focus();
-    }
-    goToQuestion(0);
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
   });
