@@ -1,6 +1,5 @@
 const { fetchPage, processHtml } = require('./index');
 
-
 const saveHtml = (options) => {
   return (hook) => {
     return fetchPage(hook.data.url)
@@ -23,7 +22,10 @@ const computePropertiesHook = (options) => {
       break;
     case 'find':
       return (hook) => {
-        hook.result.data.map(computeProperties)
+        hook.result.data = hook.result.data.map((page) => ({
+          url: page.url,
+          _id: page._id,
+        }))
         return hook
       }
   }

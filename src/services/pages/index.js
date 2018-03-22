@@ -23,8 +23,6 @@ const processHtml = (url, html) => {
   $('*').removeAttr('onsubmit')
   $('*').removeAttr('onmouseover')
   $('*').removeAttr('onscroll')
-
-
   $('script').remove()
 
   return $.html()
