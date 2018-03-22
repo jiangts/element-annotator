@@ -171,7 +171,7 @@ $(function() {
 
   function selectElement(element) {
     moveBox(element, 'green');
-    $('e' + currentQuestion).val($(element).data('xid'));
+    $('#e' + currentQuestion).val($(element).data('xid'));
     isSelectionMode = false;
     currentElement = null;
     $('#answerForm input').prop('disabled', noAssignmentId);
