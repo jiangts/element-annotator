@@ -13,6 +13,7 @@ $(function() {
                         assignmentId === "ASSIGNMENT_ID_NOT_AVAILABLE");
   var batchId = gup("batchId");
   var dataId = gup("dataId");
+  var taskName = gup("taskName").replace(/_/g, ' ') || '(unknown)';
   $("#assignmentId").val(assignmentId);
   $("#batchId").val(batchId);
   $("#dataId").val(dataId);
@@ -40,7 +41,7 @@ $(function() {
   var frameDoc = document.getElementById('webpage').contentDocument;
   var frameWin = document.getElementById('webpage').contentWindow;
 
-  const NUM_QUESTIONS = 5;
+  const NUM_QUESTIONS = 5, NUM_INPUTS_PER_QUESTION = 3;
   var questionDivs = [], currentQuestion = 0;
 
   ////////////////////////////////////////////////////////////////
@@ -92,21 +93,41 @@ $(function() {
     return answer.join(cleanNewlines ? " " : "\n");
   }
 
+  function checkAnswers() {
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      let box = frameDoc.getElementById('ANNOTATIONBOX' + i);
+      if (box.style.borderColor !== 'green') {
+        goToQuestion(i);
+        return 'Question ' + (i+1) + ' does not have a selected element';
+      }
+      for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
+        let text = clean($('#a' + i + '' + j).val());
+        $('#a' + i + '' + j).val(text);
+        if (!text.length) {
+          goToQuestion(i);
+          return 'Question ' + (i+1) + ' is missing answer ' + (j+1);
+        }
+        for (let k = 0; k < j; k++) {
+          if ($('#a' + i + '' + k).val() == text) {
+            goToQuestion(i);
+            return 'Question ' + (i+1) + ' has repeated answers';
+          }
+        }
+      }
+    }
+    return true;
+  }
+
   $('form').submit(function() {
     if (!iWillSubmit) return false;
     // Check if all text fields are filled.
-    var ok = true;
-    $('#questionWrapper textarea').each(function (i, elt) {
-      var text = clean($(elt).val());
-      $(elt).val(text);
-      if (!text.length && i < questionDivs.length - 1) ok = false;
-    });
-    if (ok) {
+    var check = checkAnswers();
+    if (check === true) {
       $('#validationWarning').hide();
       $('#submitButton').prop('disabled', true);
       return true;
     } else {
-      $('#validationWarning').show();
+      $('#validationWarning').text('ERROR: ' + check).show();
       return false;
     }
   });
@@ -133,7 +154,7 @@ $(function() {
   var isSelectionMode = false, currentElement = null;
 
   function moveBox(el, color) {
-    var box = frameDoc.getElementById('ANNOTATIONBOX');
+    var box = frameDoc.getElementById('ANNOTATIONBOX' + currentQuestion);
     var rect = el.getBoundingClientRect();
     box.style.top = '' + rect.top + 'px';
     box.style.left = '' + rect.left + 'px';
@@ -143,9 +164,19 @@ $(function() {
     currentElement = el;
   }
 
+  function enableSelectMode() {
+    isSelectionMode = true;  
+    $('#answerForm input, #answerForm button').prop('disabled', true);
+  }
+
   function selectElement(element) {
-    moveBox(element, 'blue');
-    console.log($(element).data('xid'));
+    moveBox(element, 'green');
+    $('e' + currentQuestion).val($(element).data('xid'));
+    isSelectionMode = false;
+    currentElement = null;
+    $('#answerForm input').prop('disabled', noAssignmentId);
+    $('#answerForm button').prop('disabled', false);
+    $('#prevButton').prop('disabled', currentQuestion === 0);
   }
 
   function hackPage() {
@@ -155,8 +186,6 @@ $(function() {
     })
     frameWin.addEventListener('mousedown', function(e) {
       if (isSelectionMode) {
-        isSelectionMode = false;
-        currentElement = null;
         selectElement(e.target);
       }
       e.preventDefault();
@@ -171,27 +200,21 @@ $(function() {
         moveBox(e.target, 'red')
       }
     })
-    frameDoc.body.appendChild($('<div id=ANNOTATIONBOX>').css({
-      'border': '5px solid red',
-      'position': 'absolute',
-      'pointer-events': 'none',
-      'z-index': 999999999,
-      'background-color': 'rgba(255,255,255,0.5)',
-    })[0]);
   }
 
   function createQuestionDiv(i) {
     var questionDiv = $('<div class=question>').hide();
     questionDiv.append($('<button type=button class=selectElementButton>')
         .text('Select Element')
-        .click(function (e) {isSelectionMode = true;}));
+        .click(enableSelectMode));
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i));
-    for (let j = 0; j < 3; j++) {
+    for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
       questionDiv.append($('<p class=answerRow>')
           .append($('<span>').text('' + (j+1) + '.'))
-          .append($('<input type=text>')
-            .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)));
+          .append($('<input type=text disabled>')
+            .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)
+            .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     }
     return questionDiv;
   }
@@ -202,11 +225,30 @@ $(function() {
       alert('Bad URL: "' + dataId + '" -- Please contact the requester');
       return;
     } 
+    $('input[name="url"]').val(data.url);
+    $('#taskName').text('Task: ' + taskName);
+    $('input[name="task"]').val(taskName);
     frameDoc.documentElement.innerHTML = data.processedhtml;
     hackPage();
     // Add question divs
     for (let i = 0; i < NUM_QUESTIONS; i++) {
       questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
+      frameDoc.body.appendChild($('<div>')
+        .attr('id', 'ANNOTATIONBOX' + i)
+        .text(i + 1)
+        .css({
+          'border': '5px solid red',
+          'position': 'absolute',
+          'pointer-events': 'none',
+          'z-index': 999999999,
+          'background-color': 'rgba(255,255,255,0.5)',
+          'font-size': '30px',
+          'font-weight': 'bold',
+          'overflow': 'visible',
+          'display': 'flex',
+          'align-items': 'center',
+          'justify-content': 'center',
+        })[0]);
     }
     // Show / Hide instructions
     $("#hideInstructionButton").text("Hide").prop('disabled', false);

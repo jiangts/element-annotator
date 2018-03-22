@@ -170,7 +170,16 @@ body {
 }
 
 #answerForm .answerRow input {
-  font-size: 130%;
+  font-size: 120%;
+  width: 85%;
+}
+
+#answerForm #taskName {
+  padding: 10px;
+  margin: 10px;
+  background-color: #FFF;
+  font-size: 120%;
+  text-align: center;
 }
 
 /*****************************************************************/

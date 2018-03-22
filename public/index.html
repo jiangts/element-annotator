@@ -20,19 +20,20 @@
       <div id="showingInstruction">
         <h1>Instructions</h1>
         <button type="button" class="floatButton" id="hideInstructionButton" disabled>Loading ...</button>
-        <ol>
-          <li>On the given web page, come up with a task that uses the web page (e.g., search for flights, register an account, select a product).</li>
-          <li>Select 5 elements on the page that are relevant to the task.</li>
-          <li>For each element, write down 3 different ways to refer to it in English.
-          <ul>
-            <li><strong>Tip:</strong> Imagine that you need to do the task <strong>without seeing the web page</strong>. You have to tell your friend (or your personal assistant) to do the task for you. Try to name the element so that your friend can choose the right element on the web page.</li>
-            <li><strong>Example 1:</strong> A "Login" button = "login button", "submit", and "sign in button"</li>
-            <li><strong>Example 2:</strong> A "Password" input box = "password box", "password field", and "pass"</li>
-            <li><strong>Example 3:</strong> A button with the magnifying glass icon = "search", "go", and "submit button" ("magnifying glass" and "magnifying glass icon" are also fine)</li>
-            <li>Please try to avoid the exact words that appear on the web page, except when it is absolutely necessary.</li>
-          </ul>
-          </li>
-        </ol>
+        <ul>
+          <li>You are given a web page and a task to be done on the web page.</li>
+          <li>Select 5 elements on the page that are relevant to the task. (Click "Select Element", then click on the target element.)</li>
+          <li>For each element, write down 3 <strong>different</strong> ways to refer to it in English.</li>
+        </ul>
+        <h1>Details</h1>
+        <ul>
+          <li><strong>Tip:</strong> Imagine that you need to do the task <strong>without seeing the web page</strong>. You have to tell your friend (or your personal assistant) to do the task for you. Try to name the element so that your friend can choose the right element on the web page.</li>
+          <li><strong>Example 1:</strong> A "Login" button = "login button", "submit", and "sign in button"</li>
+          <li><strong>Example 2:</strong> A "Password" input box = "password box", "password field", and "pass"</li>
+          <li><strong>Example 3:</strong> A button with the magnifying glass icon = "search", "go", and "submit button" ("magnifying glass" and "magnifying glass icon" are also fine)</li>
+          <li>Please avoid using exact words that appear on the web page too frequently, except when it is absolutely necessary.</li>
+          <li>We will reject submissions that do not follow the instructions.</li>
+        </ul>
       </div>
     </div>
     <div id="acceptHITWarning" class="hidden">
@@ -49,9 +50,11 @@
         <button id="submitButton" type="button" class="hidden" disabled><strong>Submit</strong></button>
       </div>
       <input type="hidden" name="url">
+      <div id="taskName"></div>
+      <input type="hidden" name="task">
       <div id="questionWrapper">
       </div>
-      <p id="validationWarning" class="hidden"></p>
+      <p id="validationWarning" class="red hidden"></p>
     </form>
   </div>
 </body>
