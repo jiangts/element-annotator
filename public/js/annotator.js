@@ -156,11 +156,13 @@ $(function() {
   function moveBox(el, color) {
     var box = frameDoc.getElementById('ANNOTATIONBOX' + currentQuestion);
     var rect = el.getBoundingClientRect();
-    box.style.top = '' + rect.top + 'px';
-    box.style.left = '' + rect.left + 'px';
-    box.style.height = '' + rect.height + 'px';
-    box.style.width = '' + rect.width + 'px';
-    box.style.borderColor = color;
+    $(box).show().css({
+      'top': rect.top,
+      'left': rect.left,
+      'height': rect.height,
+      'width': rect.width,
+      'border-color': color,
+    });
     currentElement = el;
   }
 
@@ -220,10 +222,14 @@ $(function() {
   }
 
   // Load the page!
-  $.get('/pages/' + dataId, function (data) {
+  $.get('pages/' + dataId + '.json', function (data) {
     if (data.processedhtml === undefined) {
-      alert('Bad URL: "' + dataId + '" -- Please contact the requester');
-      return;
+      if (data.html) {
+        data.processedhtml = data.html
+      } else {
+        alert('Bad URL: "' + dataId + '" -- Please contact the requester');
+        return;
+      }
     } 
     $('input[name="url"]').val(data.url);
     $('#taskName').text('Task: ' + taskName);
@@ -248,7 +254,7 @@ $(function() {
           'display': 'flex',
           'align-items': 'center',
           'justify-content': 'center',
-        })[0]);
+        }).hide()[0]);
     }
     // Show / Hide instructions
     $("#hideInstructionButton").text("Hide").prop('disabled', false);
