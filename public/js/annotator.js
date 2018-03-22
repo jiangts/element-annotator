@@ -281,14 +281,22 @@ $(function() {
     frameDoc.documentElement.innerHTML = data.processedhtml;
     hackPage();
     // Add question divs
-    if (gup("view")) {
-      $.get(gup("view"), function (data) {
-        data.forEach(function (datum, i) {
+    if (assignmentId === 'view') {
+      $.get('results/' + 'ans-' + dataId + '.json', function (viewData) {
+        viewData.forEach(function (datum, i) {
           questionDivs.push(createQuestionDivFromDatum(datum).appendTo('#questionWrapper'));
           buildBox(i);
           moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
         });
         finalizeLoading();
+        $('#submitButton').remove();
+        $('#taskName').after($('<button type=button class=selectElementButton>')
+            .text('Relocate Elements')
+            .click(function () {
+              viewData.forEach(function (datum, i) {
+                moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
+              });
+            }));
       });
     } else {
       for (let i = 0; i < NUM_QUESTIONS; i++) {
