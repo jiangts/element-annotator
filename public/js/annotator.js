@@ -159,6 +159,9 @@ $(function() {
       .text(index + 1)
       .css({
         'border': '5px solid red',
+        'box-sizing': 'border-box'
+        '-moz-box-sizing': 'border-box'
+        '-webkit-box-sizing': 'border-box'
         'position': 'absolute',
         'pointer-events': 'none',
         'z-index': 999999999,
@@ -283,6 +286,11 @@ $(function() {
     // Add question divs
     if (assignmentId === 'view') {
       $.get('results/' + 'ans-' + dataId + '.json', function (viewData) {
+        var relocateElements = function () {
+          viewData.forEach(function (datum, i) {
+            moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
+          });
+        }
         viewData.forEach(function (datum, i) {
           questionDivs.push(createQuestionDivFromDatum(datum).appendTo('#questionWrapper'));
           buildBox(i);
@@ -292,11 +300,9 @@ $(function() {
         $('#submitButton').remove();
         $('#taskName').after($('<button type=button class=selectElementButton>')
             .text('Relocate Elements')
-            .click(function () {
-              viewData.forEach(function (datum, i) {
-                moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
-              });
-            }));
+            .click(relocateElements));
+        // var erd = elementResizeDetectorMaker();
+        setInterval(relocateElements, 250)
       });
     } else {
       for (let i = 0; i < NUM_QUESTIONS; i++) {
