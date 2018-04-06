@@ -229,9 +229,6 @@ $(function() {
 
   function createQuestionDiv(i) {
     var questionDiv = $('<div class=question>').hide();
-    questionDiv.append($('<button type=button class=selectElementButton>')
-        .text('Select Element')
-        .click(enableSelectMode));
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i));
     for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
@@ -241,6 +238,9 @@ $(function() {
             .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)
             .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     }
+    questionDiv.append($('<button type=button class=selectElementButton>')
+        .text('Highlight Element')
+        .click(enableSelectMode));
     return questionDiv;
   }
 

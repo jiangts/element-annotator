@@ -65,13 +65,15 @@ body {
 }
 
 #acceptHITWarning {
-  margin-top: 3em;
-  margin-bottom: -2em;
   padding: 0.8em;
   text-align: center;
   color: #d22;
   background-color: #cdc;
   font-weight: bold;
+}
+
+#instruction {
+  height: 1.2em;
 }
 
 #showingInstruction {
@@ -134,10 +136,6 @@ body {
   padding: 0 0.5em;
   white-space: nowrap;
   font-size: 0.9em;
-}
-
-#navbar {
-  margin-top: 3em;
 }
 
 #qNum {

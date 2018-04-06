@@ -50,6 +50,11 @@
       Preview Mode.<br>Please accept the HIT to start working.
     </div>
     <form id="answerForm">
+      <input type="hidden" name="url">
+      <div id="taskName"></div>
+      <input type="hidden" name="task">
+      <div id="questionWrapper">
+      </div>
       <div id="navbar" class="centerize">
         <input type="hidden" id="assignmentId" name="assignmentId">
         <input type="hidden" id="batchId" name="batchId">
@@ -58,11 +63,6 @@
         <span id="qNum"></span>
         <button id="nextButton" type="button">Next</button>
         <button id="submitButton" type="button" class="hidden" disabled><strong>Submit</strong></button>
-      </div>
-      <input type="hidden" name="url">
-      <div id="taskName"></div>
-      <input type="hidden" name="task">
-      <div id="questionWrapper">
       </div>
       <p id="validationWarning" class="red hidden"></p>
     </form>
