@@ -301,8 +301,8 @@ $(function() {
         $('#taskName').after($('<button type=button class=selectElementButton>')
             .text('Relocate Elements')
             .click(relocateElements));
-        // var erd = elementResizeDetectorMaker();
-        setInterval(relocateElements, 250)
+        var erd = elementResizeDetectorMaker();
+        erd.listenTo(document.getElementById('webpage'), relocateElements)
       });
     } else {
       for (let i = 0; i < NUM_QUESTIONS; i++) {
