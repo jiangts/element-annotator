@@ -171,9 +171,18 @@ body {
 
 }
 
-#answerForm .answerRow input {
+#answerForm .answerRow input[type="text"] {
   font-size: 120%;
   width: 85%;
+}
+
+#answerForm .answerRow input[type="radio"] {
+  margin-right: 8px;
+}
+
+#answerForm .answerRow input[type="radio"]:checked + label {
+  font-weight: bold;
+  color: #008;
 }
 
 #answerForm #taskName {

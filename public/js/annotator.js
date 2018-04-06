@@ -98,7 +98,7 @@ $(function() {
       let box = frameDoc.getElementById('ANNOTATIONBOX' + i);
       if (box.style.borderColor !== 'green') {
         goToQuestion(i);
-        return 'Question ' + (i+1) + ' does not have a selected element';
+        return 'Question ' + (i+1) + ' does not have a highlighted element';
       }
       for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
         let text = clean($('#a' + i + '' + j).val());
@@ -176,9 +176,10 @@ $(function() {
     if (index === undefined) index = currentQuestion;
     var box = frameDoc.getElementById('ANNOTATIONBOX' + index);
     var rect = el.getBoundingClientRect();
+    var docRect = frameDoc.body.getBoundingClientRect();
     $(box).show().css({
-      'top': rect.top,
-      'left': rect.left,
+      'top': rect.top - docRect.top,
+      'left': rect.left - docRect.left,
       'height': rect.height,
       'width': rect.width,
       'border-color': color,
@@ -227,10 +228,29 @@ $(function() {
   ////////////////////////////////////////////////////////////////
   // Load data
 
+  var TEMPLATES = [
+    'click on [element]',
+    'set [element] as [value]',
+    'input [value] into [element]',
+  ];
+
   function createQuestionDiv(i) {
     var questionDiv = $('<div class=question>').hide();
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i));
+    // Template
+    $('<h2>').text('Template').appendTo(questionDiv);
+    TEMPLATES.forEach(function (template, j) {
+      var radioRow = $('<p class=answerRow>').appendTo(questionDiv);
+      $('<input type=radio>').appendTo(radioRow).attr({
+        'id': 't' + i + j,
+        'name': 't' + i,
+        'value': template,
+      });
+      $('<label>').appendTo(radioRow).text(template).attr('for', 't' + i + j);
+    });
+    // Placeholders
+    $('<h2>').text('[element]').appendTo(questionDiv);
     for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
       questionDiv.append($('<p class=answerRow>')
           .append($('<span class=numbering>').text('' + (j+1) + '.'))
@@ -238,6 +258,12 @@ $(function() {
             .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)
             .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     }
+    $('<h2>').text('[value]').appendTo(questionDiv);
+    questionDiv.append($('<p class=answerRow>')
+        .append($('<span class=numbering>'))
+        .append($('<input type=text disabled>')
+          .attr('id', 'v' + i).attr('name', 'v' + i)
+          .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     questionDiv.append($('<button type=button class=selectElementButton>')
         .text('Highlight Element')
         .click(enableSelectMode));
@@ -307,6 +333,15 @@ $(function() {
     }
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
+  });
+
+  $(window).resize(function (event) {
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      xid = $('#e' + i).val();
+      if (xid !== '') {
+        moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', i);
+      }
+    }
   });
 
 });
