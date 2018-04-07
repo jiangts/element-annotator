@@ -21,20 +21,28 @@
       <div id="showingInstruction">
         <h1>Instructions</h1>
         <button type="button" class="floatButton" id="hideInstructionButton" disabled>Loading ...</button>
+        <p>You are given a web page and a task to be done on the web page.
+        Please <strong>specify 5 actions</strong> (e.g., <em>input "LAX" into destination box</em>)
+        <strong>that you would do to complete the task</strong>.</p>
+        <p>To specify an action:</p>
         <ul>
-          <li>You are given a web page and a task to be done on the web page. (Note: We have frozen the page so that clicking does not trigger anything.)</li>
-          <li><strong>Select 5 elements</strong> on the page that <strong class=red>are relevant to the task / should be used to complete the task</strong>. To select an element, click "Select Element" and then the desired element.</li>
-          <li>For each element, write down 3 <strong>different</strong> ways to refer to it in English.</li>
+          <li>Select an <strong>action template</strong> from the provided list (e.g., "<em>input [value] into [element]</em>").</li>
+          <li><strong>Fill in the placeholders with English phrases</strong> (e.g., <em>[value]</em> = "LAX", <em>[element]</em> = "destination box").
+            For the <em>[element]</em> placeholder, you will need to write down <strong>3 different phrases</strong> for describing the same element.
+            (Please see the examples below.)</li>
+          <li>Finally, <strong>highlight the element</strong>: click "Highlight Element" and then the element.</li>
         </ul>
         <h1>Details</h1>
         <ul>
-          <li><strong>Guideline:</strong> Imagine that you need to do the task <strong>without seeing the web page</strong>. You have to tell your friend (or your personal assistant) to do the task for you. Try to name the element so that your friend can choose the right element on the web page.</li>
+          <li><strong>Guideline:</strong> When writing 3 English phrases for <em>[element]</em>,
+            imagine that you need to do the task <strong>without seeing the web page</strong>.
+            You have to tell your friend (or a personal assistant) to do the task for you.
+            Try to name the element so that your friend can choose the right element on the web page.</li>
           <li><strong>Example 1:</strong> A "Login" button = "login button", "submit", and "sign in button"</li>
           <li><strong>Example 2:</strong> A "Password" input box = "password box", "password field", and "pass"</li>
-          <li><strong>Example 3:</strong> A button with the magnifying glass icon = "search", "go", and "submit button" ("magnifying glass" and "magnifying glass icon" are also fine)</li>
-          <li><strong>Do not</strong> include the verb such as "click on" or "type in".</li>
+          <li><strong>Example 3:</strong> A button with the magnifying glass icon = "search", "go", and "submit button"
+            ("magnifying glass" and "magnifying glass icon" are also good)</li>
           <li>Please avoid using exact words that appear on the web page too frequently, except when they are the only sensible words to use.</li>
-          <li>Please do not resize the window as it makes the selections move.</li>
           <li>Please contact the requester if you have any question or issue.</li>
         </ul>
       </div>
@@ -43,6 +51,11 @@
       Preview Mode.<br>Please accept the HIT to start working.
     </div>
     <form id="answerForm">
+      <input type="hidden" name="url">
+      <div id="taskName"></div>
+      <input type="hidden" name="task">
+      <div id="questionWrapper">
+      </div>
       <div id="navbar" class="centerize">
         <input type="hidden" id="assignmentId" name="assignmentId">
         <input type="hidden" id="batchId" name="batchId">
@@ -51,11 +64,6 @@
         <span id="qNum"></span>
         <button id="nextButton" type="button">Next</button>
         <button id="submitButton" type="button" class="hidden" disabled><strong>Submit</strong></button>
-      </div>
-      <input type="hidden" name="url">
-      <div id="taskName"></div>
-      <input type="hidden" name="task">
-      <div id="questionWrapper">
       </div>
       <p id="validationWarning" class="red hidden"></p>
     </form>
