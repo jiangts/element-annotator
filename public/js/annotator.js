@@ -13,7 +13,6 @@ $(function() {
                         assignmentId === "ASSIGNMENT_ID_NOT_AVAILABLE");
   var batchId = gup("batchId");
   var dataId = gup("dataId");
-  var taskName = gup("taskName").replace(/_/g, ' ') || '(unknown)';
   $("#assignmentId").val(assignmentId);
   $("#batchId").val(batchId);
   $("#dataId").val(dataId);
@@ -41,30 +40,8 @@ $(function() {
   var frameDoc = document.getElementById('webpage').contentDocument;
   var frameWin = document.getElementById('webpage').contentWindow;
 
-  const NUM_QUESTIONS = 5, NUM_INPUTS_PER_QUESTION = 3;
-  var questionDivs = [], currentQuestion = 0;
-
-  ////////////////////////////////////////////////////////////////
-  // Navigation
-
-  function goToQuestion(questionNum) {
-    $('.question').hide();
-    questionDivs[questionNum].show();
-    $('#qNum').text('' + (questionNum + 1) + ' / ' + questionDivs.length);
-    $('#prevButton').prop('disabled', questionNum === 0);
-    $('#nextButton').toggle(questionNum !== questionDivs.length - 1);
-    $('#submitButton').toggle(questionNum === questionDivs.length - 1);
-    currentQuestion = questionNum;
-    $('#qNum').trigger('questionChanged');
-  }
-
-  $('#prevButton').click(function () {
-    goToQuestion(currentQuestion - 1);
-  });
-  
-  $('#nextButton').click(function () {
-    goToQuestion(currentQuestion + 1);
-  });
+  const NUM_QUESTIONS = 5;
+  var questionDivs = [], currentQuestion;
 
   ////////////////////////////////////////////////////////////////
   // Form submission
@@ -231,55 +208,24 @@ $(function() {
   ////////////////////////////////////////////////////////////////
   // Load data
 
-  var TEMPLATES = [
-    'click on [element]',
-    'set [element] as [value]',
-    'input [value] into [element]',
-  ];
-
   function createQuestionDiv(i) {
-    var questionDiv = $('<div class=question>').hide();
+    var questionDiv = $('<div class=question>');
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i));
-    // Template
-    $('<h2>').text('Template').appendTo(questionDiv);
-    TEMPLATES.forEach(function (template, j) {
-      var radioRow = $('<p class=answerRow>').appendTo(questionDiv);
-      $('<input type=radio>').appendTo(radioRow).attr({
-        'id': 't' + i + j,
-        'name': 't' + i,
-        'value': template,
-      });
-      $('<label>').appendTo(radioRow).text(template).attr('for', 't' + i + j);
-    });
-    // Placeholders
-    $('<h2>').text('[element]').appendTo(questionDiv);
-    for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
-      questionDiv.append($('<p class=answerRow>')
-          .append($('<span class=numbering>').text('' + (j+1) + '.'))
-          .append($('<input type=text disabled>')
-            .attr('id', 'a' + i + '' + j).attr('name', 'a' + i + '' + j)
-            .val(noAssignmentId ? 'PREVIEW MODE' : '')));
-    }
-    $('<h2>').text('[value]').appendTo(questionDiv);
+    // Command
+    $('<h2>').text('Command ' + (i+1)).appendTo(questionDiv);
     questionDiv.append($('<p class=answerRow>')
-        .append($('<span class=numbering>'))
-        .append($('<input type=text disabled>')
-          .attr('id', 'v' + i).attr('name', 'v' + i)
+        .append($('<textarea disabled>')
+          .attr('id', 'a' + i).attr('name', 'a' + i)
           .val(noAssignmentId ? 'PREVIEW MODE' : '')));
-    questionDiv.append($('<button type=button class=selectElementButton>')
-        .text('Highlight Element')
-        .click(enableSelectMode));
-    return questionDiv;
-  }
-
-  function createQuestionDivFromDatum(datum, i) {
-    var questionDiv = $('<div class=question>').hide();
-    datum.answers.forEach(function (answer, j) {
-      questionDiv.append($('<p class=answerRow>')
-          .append($('<span class=numbering>').text('' + (j+1) + '.'))
-          .append($('<span class=view-answer>').text(answer)));
-    });
+    // Highlight
+    questionDiv.append($('<p class=buttonRow>')
+        .append($('<button type=button class=selectElementButton>')
+          .text('Highlight Element')
+          .click(function () {
+            currentQuestion = i;
+            enableSelectMode();
+          })));
     return questionDiv;
   }
 
@@ -291,7 +237,6 @@ $(function() {
       $('.question textarea, .question input, #submitButton').prop('disabled', false);
       $('#a1').focus();
     }
-    goToQuestion(0);
   }
 
   // Load the page!
@@ -305,31 +250,11 @@ $(function() {
       }
     } 
     $('input[name="url"]').val(data.url);
-    $('#taskName').text('Task: ' + taskName);
-    $('input[name="task"]').val(taskName);
     frameDoc.documentElement.innerHTML = data.processedhtml;
     hackPage();
     // Add question divs
     if (assignmentId === 'view') {
-      $.get('results/' + 'ans-' + dataId + '.json', function (viewData) {
-        var relocateElements = function () {
-          viewData.forEach(function (datum, i) {
-            moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
-          });
-        }
-        viewData.forEach(function (datum, i) {
-          questionDivs.push(createQuestionDivFromDatum(datum).appendTo('#questionWrapper'));
-          buildBox(i);
-          moveBox($(frameDoc).find("[data-xid='" + datum.xid + "']")[0], 'green', i);
-        });
-        finalizeLoading();
-        $('#submitButton').remove();
-        $('#taskName').after($('<button type=button class=selectElementButton>')
-            .text('Relocate Elements')
-            .click(relocateElements));
-        var erd = elementResizeDetectorMaker();
-        erd.listenTo(document.getElementById('webpage'), relocateElements)
-      });
+      // TODO: View mode
     } else {
       for (let i = 0; i < NUM_QUESTIONS; i++) {
         questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));

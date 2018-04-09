@@ -21,29 +21,25 @@
       <div id="showingInstruction">
         <h1>Instructions</h1>
         <button type="button" class="floatButton" id="hideInstructionButton" disabled>Loading ...</button>
-        <p>You are given a web page and a task to be done on the web page.
-        Please <strong>specify 5 actions</strong> (e.g., <em>input "LAX" into destination box</em>)
-        <strong>that you would do to complete the task</strong>.</p>
-        <p>To specify an action:</p>
+        <p>Suppose you want to perform 5 actions on the given web page using a voice interface
+        (such as Siri and Alexa). For each action:</p>
         <ul>
-          <li>Select an <strong>action template</strong> from the provided list (e.g., "<em>input [value] into [element]</em>").</li>
-          <li><strong>Fill in the placeholders with English phrases</strong> (e.g., <em>[value]</em> = "LAX", <em>[element]</em> = "destination box").
-            For the <em>[element]</em> placeholder, you will need to write down <strong>3 different phrases</strong> for describing the same element.
-            (Please see the examples below.)</li>
-          <li>Finally, <strong>highlight the element</strong>: click "Highlight Element" and then the element.</li>
+          <li><strong>Write down a command</strong> you would say to the voice interface.</li>
+          <li><strong>Highlight the action target</strong> on the web page: click on the "highlight" button and then the target.</li>
         </ul>
-        <h1>Details</h1>
+        <h2>Examples</h2>
         <ul>
-          <li><strong>Guideline:</strong> When writing 3 English phrases for <em>[element]</em>,
-            imagine that you need to do the task <strong>without seeing the web page</strong>.
-            You have to tell your friend (or a personal assistant) to do the task for you.
-            Try to name the element so that your friend can choose the right element on the web page.</li>
-          <li><strong>Example 1:</strong> A "Login" button = "login button", "submit", and "sign in button"</li>
-          <li><strong>Example 2:</strong> A "Password" input box = "password box", "password field", and "pass"</li>
-          <li><strong>Example 3:</strong> A button with the magnifying glass icon = "search", "go", and "submit button"
-            ("magnifying glass" and "magnifying glass icon" are also good)</li>
-          <li>Please avoid using exact words that appear on the web page too frequently, except when they are the only sensible words to use.</li>
-          <li>Please contact the requester if you have any question or issue.</li>
+          <li>"enter LAX into the destination field" &rarr; highlight the textbox under the "To:" label</li>
+          <li>"click submit" &rarr; highlight the Search button</li>
+          <li>"click on the first article" &rarr; highlight the article title</li>
+          <li>"in the search box, type jacket" &rarr; highlight the textbox near the magnifying glass icon</li>
+        </ul>
+        <h2>Guidelines</h2>
+        <ul>
+          <li>When writing the commands, imagine that you need to do the task without clearly seeing the texts on the web page.</li>
+          <li>As such, try to avoid the exact words that appear on the web page (unless they are the only sensible words, such as "password").</li>
+          <li>But also be specific enough that the voice interface can guess the right target.</li>
+          <li>Try to vary the sentence structures.</li>
         </ul>
       </div>
     </div>
@@ -52,18 +48,13 @@
     </div>
     <form id="answerForm">
       <input type="hidden" name="url">
-      <div id="taskName"></div>
-      <input type="hidden" name="task">
       <div id="questionWrapper">
       </div>
       <div id="navbar" class="centerize">
         <input type="hidden" id="assignmentId" name="assignmentId">
         <input type="hidden" id="batchId" name="batchId">
         <input type="hidden" id="dataId" name="dataId">
-        <button id="prevButton" type="button">Previous</button>
-        <span id="qNum"></span>
-        <button id="nextButton" type="button">Next</button>
-        <button id="submitButton" type="button" class="hidden" disabled><strong>Submit</strong></button>
+        <button id="submitButton" type="button" disabled><strong>Submit</strong></button>
       </div>
       <p id="validationWarning" class="red hidden"></p>
     </form>

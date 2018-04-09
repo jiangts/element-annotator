@@ -152,12 +152,11 @@ body {
 }
 
 #answerForm .selectElementButton {
-  width: 100%;
   height: 2.5em;
 }
 
 #answerForm .answerRow {
-  margin: 0.5em 0;
+  margin: 0;
 }
 
 #answerForm .answerRow span.numbering {
@@ -176,6 +175,11 @@ body {
   width: 85%;
 }
 
+#answerForm .answerRow textarea {
+  box-sizing: border-box;
+  width: 100%;
+}
+
 #answerForm .answerRow input[type="radio"] {
   margin-right: 8px;
 }
@@ -183,6 +187,11 @@ body {
 #answerForm .answerRow input[type="radio"]:checked + label {
   font-weight: bold;
   color: #008;
+}
+
+#answerForm .buttonRow {
+  margin: 0;
+  text-align: right;
 }
 
 #answerForm #taskName {
