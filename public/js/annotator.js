@@ -70,26 +70,28 @@ $(function() {
     return answer.join(cleanNewlines ? " " : "\n");
   }
 
-  function checkAnswers() {
+  function countHighlights() {
+    var count = 0;
     for (let i = 0; i < NUM_QUESTIONS; i++) {
       let box = frameDoc.getElementById('ANNOTATIONBOX' + i);
-      if (box.style.borderColor !== 'green') {
-        goToQuestion(i);
-        return 'Question ' + (i+1) + ' does not have a highlighted element';
+      if (box.style.borderColor === 'green') {
+        count++;
       }
-      for (let j = 0; j < NUM_INPUTS_PER_QUESTION; j++) {
-        let text = clean($('#a' + i + '' + j).val());
-        $('#a' + i + '' + j).val(text);
-        if (!text.length) {
-          goToQuestion(i);
-          return 'Question ' + (i+1) + ' is missing answer ' + (j+1);
-        }
-        for (let k = 0; k < j; k++) {
-          if ($('#a' + i + '' + k).val() == text) {
-            goToQuestion(i);
-            return 'Question ' + (i+1) + ' has repeated answers';
-          }
-        }
+    }
+    return count;
+  }
+
+  function checkAnswers() {
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      $('#a' + i).val(clean($('#a' + i).val(), true));
+    }
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      if (!$('#a' + i).val().length) {
+        return 'Command ' + (i+1) + ' is missing';
+      }
+      let box = frameDoc.getElementById('ANNOTATIONBOX' + i);
+      if (box.style.borderColor !== 'green') {
+        return 'Command ' + (i+1) + ' does not have a highlighted element';
       }
     }
     return true;
@@ -169,7 +171,7 @@ $(function() {
 
   function enableSelectMode() {
     isSelectionMode = true;  
-    $('#answerForm input, #answerForm button').prop('disabled', true);
+    $('#answerForm textarea, #answerForm button').prop('disabled', true);
   }
 
   function selectElement(element) {
@@ -177,9 +179,9 @@ $(function() {
     $('#e' + currentQuestion).val($(element).data('xid'));
     isSelectionMode = false;
     currentElement = null;
-    $('#answerForm input').prop('disabled', noAssignmentId);
+    $('#answerForm textarea').prop('disabled', noAssignmentId);
     $('#answerForm button').prop('disabled', false);
-    $('#prevButton').prop('disabled', currentQuestion === 0);
+    $('#submitButton').prop('disabled', noAssignmentId || countHighlights() !== NUM_QUESTIONS);
   }
 
   function hackPage() {
@@ -234,7 +236,7 @@ $(function() {
     $("#hideInstructionButton").text("Hide").prop('disabled', false);
     toggleInstructions(noAssignmentId);
     if (!noAssignmentId) {
-      $('.question textarea, .question input, #submitButton').prop('disabled', false);
+      $('.question textarea, .question input').prop('disabled', false);
       $('#a1').focus();
     }
   }

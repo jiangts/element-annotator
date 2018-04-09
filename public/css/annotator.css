@@ -151,8 +151,8 @@ body {
   color: #aaa;
 }
 
-#answerForm .selectElementButton {
-  height: 2.5em;
+#answerForm h2 {
+  margin: 0 auto 0.5em;
 }
 
 #answerForm .answerRow {
@@ -180,26 +180,13 @@ body {
   width: 100%;
 }
 
-#answerForm .answerRow input[type="radio"] {
-  margin-right: 8px;
-}
-
-#answerForm .answerRow input[type="radio"]:checked + label {
-  font-weight: bold;
-  color: #008;
-}
-
 #answerForm .buttonRow {
   margin: 0;
   text-align: right;
 }
 
-#answerForm #taskName {
-  padding: 10px;
-  margin: 10px;
-  background-color: #FFF;
-  font-size: 120%;
-  text-align: center;
+#answerForm .selectElementButton {
+  height: 2.5em;
 }
 
 /*****************************************************************/
