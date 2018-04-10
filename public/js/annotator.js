@@ -37,8 +37,9 @@ $(function() {
   ////////////////////////////////////////////////////////////////
   // Globals
 
-  var frameDoc = document.getElementById('webpage').contentDocument;
-  var frameWin = document.getElementById('webpage').contentWindow;
+  var frame = document.getElementById('webpage')
+  var frameDoc = frame.contentDocument;
+  var frameWin = frame.contentWindow;
 
   const NUM_QUESTIONS = 5;
   var questionDivs = [], currentQuestion;
@@ -169,6 +170,16 @@ $(function() {
     currentElement = el;
   }
 
+  function refreshAllBoxes() {
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      xid = $('#e' + i).val();
+      if (xid !== '') {
+        moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', i);
+      }
+    }
+  }
+  $(window).resize(refreshAllBoxes);
+
   function enableSelectMode() {
     isSelectionMode = true;  
     $('#answerForm textarea, #answerForm button').prop('disabled', true);
@@ -242,39 +253,32 @@ $(function() {
   }
 
   // Load the page!
-  $.get('pages/' + dataId + '.json', function (data) {
-    if (data.processedhtml === undefined) {
-      if (data.html) {
-        data.processedhtml = data.html
-      } else {
-        alert('Bad URL: "' + dataId + '" -- Please contact the requester');
-        return;
-      }
-    } 
-    $('input[name="url"]').val(data.url);
-    frameDoc.documentElement.innerHTML = data.processedhtml;
+  $.get('pages/' + dataId + '.html', function (data) {
+    //frameDoc.documentElement.innerHTML = data;
+    frameDoc.open()
+    frameDoc.write(data);
+    frameDoc.close();
     hackPage();
-    // Add question divs
-    if (assignmentId === 'view') {
-      // TODO: View mode
-    } else {
-      for (let i = 0; i < NUM_QUESTIONS; i++) {
-        questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
-        buildBox(i);
-      }
-      finalizeLoading();
+    for (let i = 0; i < NUM_QUESTIONS; i++) {
+      questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
+      buildBox(i);
     }
+    finalizeLoading();
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
   });
 
-  $(window).resize(function (event) {
+  // Load the page!
+  /*
+  frame.onload = function (event) {
+    hackPage();
     for (let i = 0; i < NUM_QUESTIONS; i++) {
-      xid = $('#e' + i).val();
-      if (xid !== '') {
-        moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', i);
-      }
+      questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
+      buildBox(i);
     }
-  });
+    finalizeLoading();
+  };
+  frame.src = 'pages/' + dataId + '.html';
+  */
 
 });
