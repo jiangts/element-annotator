@@ -146,6 +146,7 @@ $(function() {
         'pointer-events': 'none',
         'z-index': 999999999,
         'background-color': 'rgba(255,255,255,0.5)',
+        'color': 'black',
         'font-size': '30px',
         'font-weight': 'bold',
         'overflow': 'visible',
