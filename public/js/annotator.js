@@ -145,7 +145,6 @@ $(function() {
         'position': 'absolute',
         'pointer-events': 'none',
         'z-index': 999999999,
-        'background-color': 'rgba(255,255,255,0.5)',
         'color': 'black',
         'font-size': '30px',
         'font-weight': 'bold',
@@ -162,8 +161,8 @@ $(function() {
     var rect = el.getBoundingClientRect();
     var docRect = frameDoc.body.getBoundingClientRect();
     $(box).show().css({
-      'top': rect.top - docRect.top,
-      'left': rect.left - docRect.left,
+      'top': $(el).offset().top,
+      'left': $(el).offset().left,
       'height': rect.height,
       'width': rect.width,
       'border-color': color,
@@ -174,7 +173,7 @@ $(function() {
   function refreshAllBoxes() {
     for (let i = 0; i < NUM_QUESTIONS; i++) {
       xid = $('#e' + i).val();
-      if (xid !== '') {
+      if (xid !== '' && !(isSelectionMode && i == currentQuestion)) {
         moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', i);
       }
     }
@@ -265,6 +264,7 @@ $(function() {
       buildBox(i);
     }
     finalizeLoading();
+    setInterval(refreshAllBoxes, 1000);
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
   });

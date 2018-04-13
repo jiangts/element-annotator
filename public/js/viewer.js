@@ -122,19 +122,6 @@ $(function() {
       $('<p>').text(answer.phrase).appendTo(questionDiv);
     });
     // Event
-    /*
-    questionDiv.click(function (e) {
-      if (questionDiv.hasClass('focused')) {
-        $('.question').removeClass('focused');
-        focusBox(-1);
-      } else {
-        $('.question').removeClass('focused');
-        questionDiv.addClass('focused');
-        focusBox(i);
-      }
-      refreshAllBoxes();
-    });
-    */
     questionDiv.mousemove(function (e) {
       questionDiv.addClass('focused');
       focusBox(i);
