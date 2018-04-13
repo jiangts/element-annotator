@@ -1,0 +1,21 @@
+#wrapper {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+#questionWrapper {
+  margin: 0.8em;
+}
+
+.question {
+  padding: 0.5em 0.8em;
+  border: 1px solid gray;
+}
+
+.question.focused {
+  background-color: #ffe;
+}
+
+#wrapper h2, #wrapper p {
+  margin: 0.5em 0;
+}

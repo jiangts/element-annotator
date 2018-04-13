@@ -41,7 +41,7 @@ $(function() {
   var frameDoc = frame.contentDocument;
   var frameWin = frame.contentWindow;
 
-  const NUM_QUESTIONS = 5;
+  var NUM_QUESTIONS = 5;
   var questionDivs = [], currentQuestion;
 
   ////////////////////////////////////////////////////////////////
@@ -268,18 +268,5 @@ $(function() {
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
   });
-
-  // Load the page!
-  /*
-  frame.onload = function (event) {
-    hackPage();
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
-      questionDivs.push(createQuestionDiv(i).appendTo('#questionWrapper'));
-      buildBox(i);
-    }
-    finalizeLoading();
-  };
-  frame.src = 'pages/' + dataId + '.html';
-  */
 
 });
