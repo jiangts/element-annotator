@@ -60,7 +60,7 @@ $(function() {
     currentElement = el;
   }
 
-  function refreshAllBoxes() {
+  function refreshAllBoxes(event) {
     for (let i = 0; i < NUM_QUESTIONS; i++) {
       xid = $('#e' + i).val();
       if (xid !== '') {
@@ -91,6 +91,7 @@ $(function() {
         box.css({'color': 'transparent', 'border': '', 'box-shadow': ''});
       }
     }
+    refreshAllBoxes();
   }
 
   function hackPage() {
@@ -160,9 +161,7 @@ $(function() {
         buildBox(i);
       });
       refreshAllBoxes();
-      setTimeout(refreshAllBoxes, 1000);
-      setTimeout(refreshAllBoxes, 2000);
-      setTimeout(refreshAllBoxes, 3000);
+      setInterval(refreshAllBoxes, 1000);
     });
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');
