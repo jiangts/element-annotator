@@ -19,3 +19,15 @@
 #wrapper h2, #wrapper p {
   margin: 0.5em 0;
 }
+
+#wrapper p.special {
+  margin: 0;
+  padding: 0.3em;
+  font-size: 80%;
+  border: 1px solid gray;
+  display: inline-block;
+}
+
+#wrapper p.special.focused {
+  background-color: #aff;
+}

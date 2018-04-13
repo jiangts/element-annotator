@@ -24,7 +24,7 @@ $(function() {
   // Web page interaction
 
   function buildBox(index) {
-    frameDoc.body.appendChild($('<div>')
+    var box = $('<div>')
       .attr('id', 'ANNOTATIONBOX' + index)
       .text(index + 1)
       .css({
@@ -42,7 +42,9 @@ $(function() {
         'display': 'flex',
         'align-items': 'center',
         'justify-content': 'center',
-      }).hide()[0]);
+      }).hide();
+    frameDoc.body.appendChild(box[0]);
+    return box;
   }
 
   function moveBox(el, color, index) {
@@ -58,6 +60,25 @@ $(function() {
       'border-color': color,
     });
     currentElement = el;
+  }
+
+  var specialBox = null;
+  function showSpecialBox(xid) {
+    if (specialBox === null) {
+      specialBox = buildBox('spc').text('S');
+    }
+    if (xid === -1) {
+      specialBox.hide();
+    } else {
+      moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', 'spc');
+      // If off-screen, scroll to that element
+      if (specialBox.offset().top < $(frameWin).scrollTop()) {
+        $(frameDoc).scrollTop(specialBox.offset().top - 100);
+      } else if (specialBox.offset().top + specialBox.height() >
+          $(frameWin).scrollTop() + frameWin.innerHeight) {
+        $(frameDoc).scrollTop(specialBox.offset().top - 100);
+      }
+    }
   }
 
   function refreshAllBoxes(event) {
@@ -119,7 +140,20 @@ $(function() {
     // Command
     $('<h2>').text('Command ' + (i+1)).appendTo(questionDiv);
     result.answers.forEach(function (answer) {
-      $('<p>').text(answer.phrase).appendTo(questionDiv);
+      if (answer.special !== undefined) {
+        // Special command
+        $('<p class=special>').text(answer.special).appendTo(questionDiv)
+          .mousemove(function (e) {
+            $(this).addClass('focused');
+            showSpecialBox(answer.xid);
+          }).mouseout(function (e) {
+            $(this).removeClass('focused');
+            showSpecialBox(-1);
+          });
+      } else {
+        // Normal command
+        $('<p>').text(answer.phrase).appendTo(questionDiv);
+      }
     });
     // Event
     questionDiv.mousemove(function (e) {
