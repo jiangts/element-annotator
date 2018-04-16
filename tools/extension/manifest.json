@@ -1,0 +1,14 @@
+{
+  "name": "Page archiver",
+  "description": "page archiver",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "icons": {
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["myscript.js"]
+    }
+  ]
+}

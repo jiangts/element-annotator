@@ -1,57 +1,44 @@
-# element-annotator
+# Data Collection
 
-> web element annotation interface
+Phrase-Node data collection process:
 
-## About
+## Step 1: Save web pages
 
-This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+- `tools/extension`: Use Allan's Chrome extension to save web pages
+  - (TODO: More details on how to use)
+  - In the background, Allan's server saves all resources
 
-## Getting Started
+## Step 2: Sanitize web pages
 
-Getting up and running is as easy as 1, 2, 3.
+- `tools/convert-allan-html.py`: Batch sanitize the web pages
+  - The script removes dangerous tags (`script`, `iframe`, etc.)
+  - The script also adds a unique `data-xid` attribute to each tag
+- `tools/page-filter`: View the page and remove bad pages
+  - Start the server `tools/page-filter/server.py`, specifying a file to dump bad URLs.
+  - Start another simple server with [`http-server`](https://www.npmjs.com/package/http-server)
+    to serve static files in that directory at `http://127.0.0.1:8080`.
+  - Go to `http://127.0.0.1:8080`.
+    - Click on the web page to view it.
+    - If it's bad, click X. The URL will be dumped to the bad URL file,
+      and will not show up next time you open the interface.
+- `tools/batch-copy-files.py`: Copy the good pages to `public/pages/`
 
-1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
-2. Install your dependencies
+## Step 3: Put on Mechanical Turk
 
-    ```
-    cd path/to/element-annotator; npm install
-    ```
+- Copy the content of `public/` to a static file server (e.g., `jamie:~/www/mturk/`)
+- (Ice) Use the `mturk-api` tool in the `webrep` repo to launch tasks + parse data
 
-3. Start your app
+## Step 4: Render in Selenium
 
-    ```
-    npm start
-    ```
+- In parallel to Step 3, render pages in Selenium to get the geometries of the nodes.
+  - Start a simple server in the `public/pages/` directory (say at `http://127.0.0.1:8080`)
+  - Dump the list of URLs (e.g., `http://127.0.0.1:8000/google.com.html`) to some file (e.g., `/tmp/url-list`)
+  - Run
+    `./webrep/downloader/download.py -i /tmp/url-list -o /tmp/output-dir/ -a -H -r`
+    - This will generate `info` JSON files to `/tmp/output-dir/`
 
-## Testing
+## Step 5: Package into dataset
 
-Simply run `npm test` and all your tests in the `test/` directory will be run.
-
-## Scaffolding
-
-Feathers has a powerful command line interface. Here are a few things it can do:
-
-```
-$ npm install -g feathers-cli             # Install Feathers CLI
-
-$ feathers generate service               # Generate a new Service
-$ feathers generate hook                  # Generate a new Hook
-$ feathers generate model                 # Generate a new Model
-$ feathers help                           # Show all commands
-```
-
-## Help
-
-For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
-
-## Changelog
-
-__0.1.0__
-
-- Initial release
-
-## License
-
-Copyright (c) 2016
-
-Licensed under the [MIT license](LICENSE).
+- Put the pages (from Step 2), Turked data (from Step 3), and `info` files (from Step 4)
+  into the same place
+  - Right now they are saved at `jamie:/u/scr/ppasupat/data/webrep/phrase-node-dataset/`
