@@ -66,6 +66,8 @@ $(function() {
   function showSpecialBox(xid) {
     if (specialBox === null) {
       specialBox = buildBox('spc').text('S');
+      specialBox.css({'color': 'transparent', 'border': '2px solid cyan',
+          'box-shadow': '0 0 30px 20px #0ff, 0 0 0 100000px rgba(0, 0, 0, 20%)'});
     }
     if (xid === -1) {
       specialBox.hide();
@@ -78,6 +80,7 @@ $(function() {
           $(frameWin).scrollTop() + frameWin.innerHeight) {
         $(frameDoc).scrollTop(specialBox.offset().top - 100);
       }
+      moveBox($(frameDoc).find("[data-xid='" + xid + "']")[0], 'green', 'spc');
     }
   }
 
@@ -131,24 +134,46 @@ $(function() {
   }
 
   ////////////////////////////////////////////////////////////////
+  // Info box
+
+  function showInfoBox() {
+    if ($('#infobox').hasClass('hidden'))
+      $('#infobox').removeClass('hidden').addClass('top');
+    else if ($('#infobox').hasClass('top'))
+      $('#infobox').removeClass('top').addClass('bottom');
+    else
+      $('#infobox').removeClass('bottom').addClass('hidden');
+  }
+
+  $(window).keypress(function (e) {
+    if (e.key === 'i')
+      showInfoBox();
+  });
+
+  ////////////////////////////////////////////////////////////////
   // Load data
 
   function createViewDiv(i, result) {
     var questionDiv = $('<div class=question>');
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i).val(result.xid));
+    questionDiv.attr('title', result.xid);
     // Command
     $('<h2>').text('Command ' + (i+1)).appendTo(questionDiv);
     result.answers.forEach(function (answer) {
-      if (answer.special !== undefined) {
+      if (answer.type !== undefined) {
         // Special command
-        $('<p class=special>').text(answer.special).appendTo(questionDiv)
+        $('<p class=special>').text(answer.type).appendTo(questionDiv)
+          .attr('title', answer.xid)
           .mousemove(function (e) {
             $(this).addClass('focused');
-            showSpecialBox(answer.xid);
+            showSpecialBox(+answer.xid);
           }).mouseout(function (e) {
             $(this).removeClass('focused');
             showSpecialBox(-1);
+          }).click(function (e) {
+            fillInfo(+answer.xid, '#fef');
+            e.stopPropagation()
           });
       } else {
         // Normal command
@@ -164,8 +189,22 @@ $(function() {
       if (currentFocus == i) {
         focusBox(-1);
       }
+    }).click(function (e) {
+      fillInfo(result.xid, '#ffe'); 
     });
     return questionDiv;
+  }
+
+  function fillInfo(xid, color) {
+    if ($('#infobox').hasClass('hidden')) showInfoBox();
+    $('#infobox').empty().css('background-color', color);
+    function add(key, value) {
+      $('#infobox').append($('<p>').append($('<strong>').text(key)).append(': ').append(value));
+    }
+    element = $(frameDoc).find("[data-xid='" + xid + "']");
+    add('tag', element.prop('tagName'));
+    add('text', element.text());
+    add('dim', ' ' + element.width() + ' ' + element.height());
   }
 
   // Load the page!

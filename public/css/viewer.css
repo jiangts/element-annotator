@@ -31,3 +31,21 @@
 #wrapper p.special.focused {
   background-color: #aff;
 }
+
+#infobox {
+  padding: 1em;
+  background-color: #fef;
+}
+#infobox.top {
+  position: fixed;
+  left: 350px;
+  top: 0;
+}
+#infobox.bottom {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+}
+#infobox.hidden {
+  display: none;
+}
