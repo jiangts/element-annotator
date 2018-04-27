@@ -20,14 +20,23 @@ def enable_cors():
 
 @app.get('/list')
 def list_files():
-    with open(args.bad_filenames) as fin:
-        init_bad_filenames = set(x.strip() for x in fin)
+    marks = {}
+    with open(args.mark_filename) as fin:
+        for line in fin:
+            mark, filename = line.strip().split('\t')
+            marks[filename] = mark
+    # List of (filename, mark)
     file_list = []
     for filename in os.listdir(args.basedir):
         filename = re.sub(r'\.html$', '', filename)
-        if filename not in init_bad_filenames:
-            file_list.append(filename)
+        file_list.append((filename, marks.get(filename, '')))
     file_list.sort()
+    # Write back to file
+    shutil.copy(args.mark_filename, args.mark_filename + '.bak')
+    with open(args.mark_filename, 'w') as fout:
+        for filename, mark in file_list:
+            if mark:
+                print >> fout, '{}\t{}'.format(mark, filename)
     return {
         'filenames': file_list,
         }
@@ -38,12 +47,14 @@ def view():
     with open(os.path.join(args.basedir, filename + '.html')) as fin:
         return fin.read()
 
-@app.post('/bad')
-def bad():
+@app.post('/mark')
+def post_mark():
     filename = request.forms.filename
-    with open(args.bad_filenames, 'a') as fout:
-        print >> fout, filename
-    return 'Removed {}'.format(filename)
+    mark = request.forms.mark
+    assert mark in ('o', 'x')
+    with open(args.mark_filename, 'a') as fout:
+        print >> fout, '{}\t{}'.format(mark, filename)
+    return 'Marked {} as {}'.format(filename, mark)
 
 ################################################
 
@@ -56,8 +67,8 @@ def main():
             help='Allow global access to the server')
     parser.add_argument('basedir',
             help='Storage base directory')
-    parser.add_argument('bad_filenames',
-            help='File containing bad filenames')
+    parser.add_argument('mark_filename',
+            help='File containing marked filenames')
     args = parser.parse_args()
 
     # Start the server

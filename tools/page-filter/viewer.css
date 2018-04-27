@@ -8,7 +8,6 @@ body {
   position: fixed;
   width: 250px;
   height: 100%;
-  background-color: #ded;
   box-sizing: border-box;
   padding: 10px 20px;
   overflow: auto;
@@ -23,8 +22,11 @@ body {
   cursor: pointer;
   color: #229;
 }
-#file-column .bad {
-  background-color: red;
+#file-column .mark-x {
+  background-color: #FCC;
+}
+#file-column .mark-o {
+  background-color: #CFC;
 }
 #file-column span.selected {
   font-weight: bold;
