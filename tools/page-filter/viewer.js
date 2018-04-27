@@ -21,9 +21,12 @@ $(function () {
     var taskName = null;
     $('#file-column').empty();
     data.filenames.forEach(function (x) {
-      $('<p>').appendTo('#file-column')
-        .append($('<button type=button>').text('X').data('filename', x))
-        .append($('<span>').text(decodeURIComponent(x)).data('filename', x));
+      var filename = x[0], mark = x[1];
+      var p = $('<p>').appendTo('#file-column')
+        .append($('<button type=button class=button-o>').text('O').data('filename', filename))
+        .append($('<button type=button class=button-x>').text('X').data('filename', filename))
+        .append($('<span>').text(decodeURIComponent(filename)).data('filename', filename));
+      if (mark != '') p.addClass('mark-' + mark);
     });
   });
 
@@ -44,8 +47,12 @@ $(function () {
 
   $('#file-column').on('click', 'button', function (event) {
     var target = $(this);
-    $.post(server + '/bad', {'filename': $(target).data('filename')}, function (data) {
-      target.parent().addClass('bad');
+    var mark = target.hasClass('button-o') ? 'o' : 'x';
+    $.post(server + '/mark', {
+      filename: $(target).data('filename'),
+      mark: mark
+    }, function (data) {
+      target.parent().removeClass('mark-x').removeClass('mark-o').addClass('mark-' + mark);
     }).fail(function(xhr, status, error) {
       alert('' + xhr + ' ' + status + ' ' + error);
     });
