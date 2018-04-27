@@ -1,10 +1,14 @@
 #wrapper {
-  max-height: 100%;
-  overflow-y: scroll;
+  /*max-height: 100%;
+  overflow-y: scroll;*/
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 #questionWrapper {
   margin: 0.8em;
+  overflow: auto;
 }
 
 .question {
@@ -36,6 +40,7 @@
   padding: 1em;
   background-color: #fef;
 }
+/*
 #infobox.top {
   position: fixed;
   left: 350px;
@@ -46,6 +51,7 @@
   right: 0;
   bottom: 0;
 }
+*/
 #infobox.hidden {
   display: none;
 }

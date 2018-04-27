@@ -160,37 +160,76 @@ $(function() {
     questionDiv.attr('title', result.xid);
     // Command
     $('<h2>').text('Command ' + (i+1)).appendTo(questionDiv);
-    result.answers.forEach(function (answer) {
-      if (answer.type !== undefined) {
-        // Special command
-        $('<p class=special>').text(answer.type).appendTo(questionDiv)
-          .attr('title', answer.xid)
-          .mousemove(function (e) {
-            $(this).addClass('focused');
-            showSpecialBox(+answer.xid);
-          }).mouseout(function (e) {
-            $(this).removeClass('focused');
-            showSpecialBox(-1);
-          }).click(function (e) {
-            fillInfo(+answer.xid, '#fef');
-            e.stopPropagation()
-          });
-      } else {
-        // Normal command
-        $('<p>').text(answer.phrase).appendTo(questionDiv);
-      }
-    });
-    // Event
-    questionDiv.mousemove(function (e) {
+    // result.answers.forEach(function (answer) {
+    //   if (answer.type !== undefined) {
+    //     // Special command
+    //     $('<p class=special>').text(answer.type).appendTo(questionDiv)
+    //       .attr('title', answer.xid)
+    //       .mousemove(function (e) {
+    //         $(this).addClass('focused');
+    //         showSpecialBox(+answer.xid);
+    //       }).mouseout(function (e) {
+    //         $(this).removeClass('focused');
+    //         showSpecialBox(-1);
+    //       }).click(function (e) {
+    //         fillInfo(+answer.xid, '#fef');
+    //         e.stopPropagation()
+    //       });
+    //   } else {
+    //     // Normal command
+    //     $('<p>').text(answer.phrase).appendTo(questionDiv);
+    //   }
+    // });
+    function hoverQuestion (e) {
       questionDiv.addClass('focused');
       focusBox(i);
-    }).mouseout(function (e) {
+    };
+    function unhoverQuestion(e) {
       $('.question').removeClass('focused');
       if (currentFocus == i) {
         focusBox(-1);
       }
-    }).click(function (e) {
-      fillInfo(result.xid, '#ffe'); 
+    }
+
+
+    $('<p>').text(result.phrase+' ('+result.xid+') ').appendTo(questionDiv);
+    result.predictions.forEach(function (answer) {
+      // Special command
+      var text = frameDoc.querySelector("[data-xid='"+answer.xid+"']").textContent
+      var scoretext = answer.xid
+      // +' f1: '+answer.f1
+        +' score: '+answer.score.toFixed(2)
+      +' '+text
+      var thing = $('<p class=special>').text(scoretext).appendTo(questionDiv)
+        .css('display', 'block')
+        .attr('title', answer.xid)
+        .hover(function (e) {
+          $(this).addClass('focused');
+          showSpecialBox(+answer.xid);
+        }, function (e) {
+          $(this).removeClass('focused');
+          showSpecialBox(-1);
+          hoverQuestion()
+        }).click(function (e) {
+          fillInfo(+answer.xid, '#fef');
+          e.stopPropagation()
+        });
+      if(answer.match) {
+        thing.css('background-color', 'green');
+      }
+    });
+    var predxids = result.predictions.map(m=>m.xid+'')
+    if (predxids[0] === ''+result.xid) {
+      questionDiv.css('background-color', 'lightgreen')
+    }
+    else if (predxids.indexOf(''+result.xid) > 0) {
+      questionDiv.css('background-color', 'lightyellow')
+    } else {
+      questionDiv.css('background-color', 'salmon')
+    }
+    // Event
+    questionDiv.hover(hoverQuestion, unhoverQuestion).click(function (e) {
+      fillInfo(result.xid, '#ffe');
     });
     return questionDiv;
   }
@@ -207,6 +246,7 @@ $(function() {
     add('dim', ' ' + element.width() + ' ' + element.height());
   }
 
+
   // Load the page!
   $.get('pages/' + dataId + '.html', function (data) {
     //frameDoc.documentElement.innerHTML = data;
@@ -214,14 +254,33 @@ $(function() {
     frameDoc.write(data);
     frameDoc.close();
     hackPage();
-    $.get('results/ans-' + dataId + '.json', function (results) {
+
+    // $.get('results/ans-' + dataId + '.json', function (results) {
+    //   NUM_QUESTIONS = results.length;
+    //   console.log('INDI', typeof results)
+    //   results.forEach(function (result, i) {
+    //     questionDivs.push(createViewDiv(i, result).appendTo('#questionWrapper'));
+    //     buildBox(i);
+    //   });
+    //   refreshAllBoxes();
+    //   setInterval(refreshAllBoxes, 250);
+    // });
+
+    // Load all results
+    $.get('results/all.jsonl', function (results) {
+      results = results
+        .split('\n')
+        .filter(s=>s.trim().length>0)
+        .map(JSON.parse)
+        .filter(r=>r.webpage===dataId)
+
       NUM_QUESTIONS = results.length;
       results.forEach(function (result, i) {
         questionDivs.push(createViewDiv(i, result).appendTo('#questionWrapper'));
         buildBox(i);
       });
       refreshAllBoxes();
-      setInterval(refreshAllBoxes, 1000);
+      setInterval(refreshAllBoxes, 250);
     });
   }).fail(function () {
     alert('Bad URL: "' + dataId + '" -- Please contact the requester');

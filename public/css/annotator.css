@@ -152,7 +152,7 @@ body {
 }
 
 #answerForm h2 {
-  margin: 0.5em auto 0.5em;
+  margin: 0 auto 0.5em;
 }
 
 #answerForm .answerRow {
@@ -178,11 +178,6 @@ body {
 #answerForm .answerRow textarea {
   box-sizing: border-box;
   width: 100%;
-}
-
-#answerForm div.phrase {
-  margin: 0.5em auto;
-  text-align: center;
 }
 
 #answerForm .buttonRow {
