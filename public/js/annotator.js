@@ -98,8 +98,11 @@ $(function() {
     return true;
   }
 
-  $('form').submit(function() {
-    if (!iWillSubmit) return false;
+  $('form').submit(function (e) {
+    if (!iWillSubmit) {
+      e.preventDefault();
+      return false;
+    }
     // Check if all text fields are filled.
     var check = checkAnswers();
     if (check === true) {
@@ -108,6 +111,7 @@ $(function() {
       return true;
     } else {
       $('#validationWarning').text('ERROR: ' + check).show();
+      e.preventDefault();
       return false;
     }
   });
@@ -234,7 +238,7 @@ $(function() {
     // Highlight
     questionDiv.append($('<p class=buttonRow>')
         .append($('<button type=button class=selectElementButton>')
-          .text('Highlight Element')
+          .text('Highlight Element ' + (i+1))
           .click(function () {
             currentQuestion = i;
             enableSelectMode();

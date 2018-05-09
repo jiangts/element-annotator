@@ -138,6 +138,10 @@ body {
   font-size: 0.9em;
 }
 
+#showingInstruction .red {
+  color: #C00;
+}
+
 #qNum {
   margin: 0 0.5em;
 }
