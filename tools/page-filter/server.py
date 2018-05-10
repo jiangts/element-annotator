@@ -9,6 +9,8 @@ import gzip
 from bottle import Bottle, request, response, static_file
 app = Bottle()
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 ################################
 
 args = None
@@ -28,6 +30,8 @@ def list_files():
     # List of (filename, mark)
     file_list = []
     for filename in os.listdir(args.basedir):
+        if not filename.endswith('.html'):
+            continue
         filename = re.sub(r'\.html$', '', filename)
         file_list.append((filename, marks.get(filename, '')))
     file_list.sort()
@@ -47,6 +51,7 @@ def view():
     with open(os.path.join(args.basedir, filename + '.html')) as fin:
         return fin.read()
 
+
 @app.post('/mark')
 def post_mark():
     filename = request.forms.filename
@@ -55,6 +60,16 @@ def post_mark():
     with open(args.mark_filename, 'a') as fout:
         print >> fout, '{}\t{}'.format(mark, filename)
     return 'Marked {} as {}'.format(filename, mark)
+
+@app.get(r'/static/<filename:re:viewer.*|jquery.min.js>')
+def get_static(filename):
+    return static_file(filename, root=SCRIPT_DIR)
+
+@app.get(r'/static/<filename:re:.*\.html-\d+\.css>')
+def get_css(filename):
+    return static_file(filename, root=args.basedir)
+
+
 
 ################################################
 
