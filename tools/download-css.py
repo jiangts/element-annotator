@@ -40,7 +40,7 @@ def process(args, infile):
         href = x.get('href')
         if href and href.startswith('https://motif.gq/'):
             print 'Downloading {}'.format(href)
-            x['href'] = '{}-{}.css'.format(basename, i)
+            x['href'] = 'pages-css/{}-{}.css'.format(basename, i)
             with open('{}-{}.css'.format(out_prefix, i), 'w', 'utf8') as fout:
                 fout.write(requests.get(href).text)
             i += 1

@@ -183,10 +183,15 @@ body {
   box-sizing: border-box;
   width: 100%;
 }
+#answerForm .answerRow textarea:focus {
+  background-color: #FFE;
+}
+
 
 #answerForm .buttonRow {
   margin: 0;
-  text-align: right;
+  text-align: center;
+  font-weight: bold;
 }
 
 #answerForm .selectElementButton {

@@ -65,9 +65,9 @@ def post_mark():
 def get_static(filename):
     return static_file(filename, root=SCRIPT_DIR)
 
-@app.get(r'/static/<filename:re:.*\.html-\d+\.css>')
+@app.get(r'/static/pages-css/<filename:re:.*\.html-\d+\.css>')
 def get_css(filename):
-    return static_file(filename, root=args.basedir)
+    return static_file(filename, root=args.css_dir)
 
 
 
@@ -82,6 +82,7 @@ def main():
             help='Allow global access to the server')
     parser.add_argument('basedir',
             help='Storage base directory')
+    parser.add_argument('-c', '--css-dir')
     parser.add_argument('mark_filename',
             help='File containing marked filenames')
     args = parser.parse_args()
