@@ -197,6 +197,8 @@ $(function() {
     $('#answerForm textarea').prop('disabled', noAssignmentId);
     $('#answerForm button').prop('disabled', false);
     $('#submitButton').prop('disabled', noAssignmentId || countHighlights() !== NUM_QUESTIONS);
+    $('#a' + currentQuestion).focus();
+    $('#btn' + currentQuestion).css({'color': 'green', 'font-weight': 'bold'});
   }
 
   function hackPage() {
@@ -229,20 +231,21 @@ $(function() {
     var questionDiv = $('<div class=question>');
     questionDiv.append($('<input type=hidden>')
         .attr('id', 'e' + i).attr('name', 'e' + i));
-    // Command
-    $('<h2>').text('Command ' + (i+1)).appendTo(questionDiv);
-    questionDiv.append($('<p class=answerRow>')
-        .append($('<textarea disabled>')
-          .attr('id', 'a' + i).attr('name', 'a' + i)
-          .val(noAssignmentId ? 'PREVIEW MODE' : '')));
+    $('<hr>').appendTo(questionDiv);
     // Highlight
     questionDiv.append($('<p class=buttonRow>')
         .append($('<button type=button class=selectElementButton>')
+          .attr('id', 'btn' + i)
           .text('Highlight Element ' + (i+1))
           .click(function () {
             currentQuestion = i;
             enableSelectMode();
           })));
+    // Command
+    questionDiv.append($('<p class=answerRow>')
+        .append($('<textarea disabled>')
+          .attr('id', 'a' + i).attr('name', 'a' + i)
+          .val(noAssignmentId ? 'PREVIEW MODE' : '')));
     return questionDiv;
   }
 
