@@ -36,7 +36,7 @@ def main():
     parser.add_argument('outdir')
     args = parser.parse_args()
 
-    for filename in os.listdir(args.indir):
+    for filename in sorted(os.listdir(args.indir)):
         print 'Processing {} ...'.format(filename)
         process(filename, args)
     
