@@ -8,8 +8,8 @@ wget -r --no-parent --no-directories -l 1 http://stanford.edu/~jiangts/research/
 ./tools/convert-allan-html.py data/archived-pages3/ data/archived-pages3-converted/
 
 # Copy stuff
-./tools/batch-copy-files.py -g data/v5-mark-unarchived data/v5-downloaded-pages-unarchived/ data/v5-out-pages/
-./tools/batch-copy-files.py -g data/v5-mark-unarchived data/v5-downloaded-css-unarchived/ data/v5-out-css/
+./tools/batch-copy-files.py -g data/v5-unarc-mark data/v5-unarc-pages data/v5-out-pages/
+./tools/batch-copy-files.py -g data/v5-unarc-mark data/v5-unarc-css data/v5-out-css/
 rsync -avzuLi --exclude=pages-css data/v5-out-pages/ jamie:~/www/mturk/element-annotator-v8/pages/
 rsync -avzuLi data/v5-out-css/ jamie:~/www/mturk/element-annotator-v8/pages-css/ 
 

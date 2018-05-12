@@ -25,7 +25,7 @@ def has_doctype(soup):
     return False
 
 
-def strip_html(path, i):
+def strip_html(path, i, label_xid=True):
     """Strip the HTML: get rid of scripts and interactions"""
     print '[{}] Reading {} ...'.format(i, path)
     with open(path, 'r', 'utf8') as fin:
@@ -37,16 +37,25 @@ def strip_html(path, i):
     # Remove dangerous tags
     for x in soup('script'):
         x.extract()
+    for x in soup('noscript'):
+        x.extract()
     for x in soup('link'):
         if x.get('as') == 'script':
             x.extract()
     for x in soup('iframe'):
         x['src'] = ''
+    # Fix styles
+    for x in soup('style'):
+        x.string = H.unescape(u"".join(unicode(y) for y in x.contents))
     # Label all tags
     i = 1
     for x in soup.body(True):
-        x['data-xid'] = i
-        i += 1
+        for attr in list(x.attrs):
+            if attr.startswith('on') or attr == 'srcset':
+                del x[attr]
+        if label_xid:
+            x['data-xid'] = i
+            i += 1
     # Return
     return soup.prettify()
 
@@ -55,6 +64,8 @@ def paranoid_quote(url):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('-X', '--no-xid', action='store_true',
+            help='Do not label nodes with xid')
     parser.add_argument('indir',
             help='Directory containing HTML files to convert')
     parser.add_argument('outdir',
@@ -66,17 +77,18 @@ def main():
     if not os.path.exists(args.outdir):
         os.makedirs(args.outdir)
     assert os.path.isdir(args.outdir), '{} is not a directory'.format(args.outdir)
-    assert not os.listdir(args.outdir), '{} is not empty'.format(args.outdir)
+    #assert not os.listdir(args.outdir), '{} is not empty'.format(args.outdir)
 
     filenames = [filename for filename in os.listdir(args.indir)
             if filename.endswith('.html')]
     print 'Found {} web pages'.format(len(filenames))
+    filenames.sort()
 
     for i, filename in enumerate(filenames):
         try:
             in_path = os.path.join(args.indir, filename)
             out_path = os.path.join(args.outdir, filename)
-            cleaned = strip_html(in_path, i)
+            cleaned = strip_html(in_path, i, label_xid=(not args.no_xid))
             print 'Dumping to {} ...'.format(out_path)
             with open(out_path, 'w', 'utf8') as fout:
                 fout.write(cleaned)
