@@ -53,7 +53,7 @@ $(function() {
     iWillSubmit = true;
     $('#answerForm').submit();
   });
-  
+
   $('#submitButton').keyup(function(e) {
     var keyCode = e.keyCode || e.which;
     if (keyCode === 13 || keyCode === 32) {
@@ -185,7 +185,7 @@ $(function() {
   $(window).resize(refreshAllBoxes);
 
   function enableSelectMode() {
-    isSelectionMode = true;  
+    isSelectionMode = true;
     $('#answerForm textarea, #answerForm button').prop('disabled', true);
   }
 
