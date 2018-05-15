@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Element Annotator</title>
+  <title>Element Validator</title>
   <link rel="stylesheet" type="text/css" href="css/annotator.css">
   <link rel="stylesheet" type="text/css" href="css/viewer.css">
   <script type="text/javascript" src="js/jquery.min.js"></script>
@@ -25,13 +25,16 @@
         <p>Highlight elements on the page according to the descriptions. For each question:</p>
         <ul>
           <li>If the phrase describes an element on the web page,
-          click <strong>Highlight Element</strong> and then click on the element to highlight it.</li>
-          <li>Otherwise, click <strong>Element Not Present</strong>.
+          click <strong>Choose Element</strong> and then click on the element to highlight it.</li>
+          <li>Otherwise, click <strong>Not Found</strong>.</li>
         </ul>
         <h2>Guidelines</h2>
         <ul>
+          <li>Prefer interactive elements (e.g, buttons, links, text boxes) to non-interactive elements.</li>
+          <li>If there are multiple elements matching the description, choose the one that stands out the most.</li>
+          <li>Multiple descriptions may describe the same element.</li>
           <li>We will use gold labels as well as the answers from other workers to screen spam submissions,
-          but we will manually review them.</li>
+          but we will manually review them. So do not worry if you missed a few elements.</li>
         </ul>
       </div>
     </div>

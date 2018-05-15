@@ -23,3 +23,7 @@ cd data/v5-out-pages/ && ls --color=none | grep '\.html$' | sed 's_^_http://127.
 
 # Copy to the dataset directory on jamie
 rsync -avzuLi data/v5-out-pages/ jamie:/u/scr/ppasupat/data/webrep/phrase-node-dataset/pages/v5/
+
+# Validator
+./tools/generate-validator-data.py ~/Private/webrep/data/phrase-node-dataset/data/combined-v2.dev.jsonl data/validate-jsons/
+rsync -avzuLi --exclude='pages*' public/ jamie:~/www/mturk/element-annotator-validator/

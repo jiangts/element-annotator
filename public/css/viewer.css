@@ -33,3 +33,25 @@
 #wrapper p.special.focused {
   background-color: #aff;
 }
+
+#wrapper .question button {
+  padding: 5px 8px;
+  font-size: 90%;
+  margin: 3px;
+  background-color: #EEE;
+}
+#wrapper .question button.chosen {
+  background-color: yellow;
+}
+
+#acceptHITWarning {
+  margin: 2px 5px;
+}
+#answerForm {
+  max-height: 800px;
+  overflow-y: scroll;
+  margin: 5px;
+}
+#answerForm h2 {
+  display: none;
+}
