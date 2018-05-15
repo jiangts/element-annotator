@@ -7,8 +7,32 @@ $(function() {
     return (results === null) ? "" : results[1];
   }
 
+  // Get the assignment ID
+  var assignmentId = gup("assignmentId");
+  var noAssignmentId = (!assignmentId ||
+                        assignmentId === "ASSIGNMENT_ID_NOT_AVAILABLE");
   var batchId = gup("batchId");
   var dataId = gup("dataId");
+  $("#assignmentId").val(assignmentId);
+  $("#batchId").val(batchId);
+  $("#dataId").val(dataId);
+  if (noAssignmentId) {
+    // We are previewing the HIT. Display helpful message
+    $("#acceptHITWarning").show();
+  }
+  if (gup("turkSubmitTo").indexOf("workersandbox") !== -1) {
+    // Sandbox mode
+    $("#answerForm")
+      .attr("action", "https://workersandbox.mturk.com/mturk/externalSubmit");
+  } else if (gup("debug") === "true") {
+    // Debug mode
+    $("#answerForm")
+      .attr("action", "javascript:alert('debug!')");
+  } else {
+    // Real mode
+    $("#answerForm")
+      .attr("action", "https://www.mturk.com/mturk/externalSubmit");
+  }
 
   ////////////////////////////////////////////////////////////////
   // Globals
@@ -184,7 +208,6 @@ $(function() {
         .filter(s=>s.trim().length>0)
         .map(JSON.parse)
         .filter(r=>r.webpage===dataId)
-
       NUM_QUESTIONS = results.length;
       results.forEach(function (result, i) {
         questionDivs.push(createViewDiv(i, result).appendTo('#questionWrapper'));
